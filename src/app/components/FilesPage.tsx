@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { fileRecords, FileRecord, PaymentRequest, paymentRequests, AnyRequest, genericRequests } from './mockData';
-import svgPaths from '@/imports/svg-qfkwezagl1';
-import searchSvg from '@/imports/svg-8lob6ng13t';
+import svgPaths from "@/imports/svg-4ju1a44uaw";
+import searchSvg from "@/imports/svg-8lob6ng13t";
+import QuickActions from '@/imports/QuickActions';
+import { fileRecords, paymentRequests } from './mockData';
+import type { AnyRequest, FileRecord } from './mockData';
 
 interface FilesPageProps {
   onSelectRequest: (req: AnyRequest) => void;
@@ -49,9 +51,11 @@ function FileDetailView({ file, onBack, onSelectRequest }: { file: FileRecord; o
         <div className="bg-[#156fbe] h-px w-[20px]" />
       </div>
 
-      {/* Content */}
+      {/* Content - Two Column Layout */}
       <div className="flex-1 overflow-auto bg-white">
-        <div className="px-[24px] py-[24px]">
+        <div className="px-[24px] py-[24px] flex gap-[24px]">
+          {/* Left Column - File Details Table */}
+          <div className="flex-1 min-w-0">
           <div className="bg-white rounded-[6px] overflow-hidden shadow-[0px_3px_10.25px_0px_rgba(16,39,84,0.1)]">
             {/* Column Headers */}
             <div className="overflow-x-auto scrollbar-hide">
@@ -116,6 +120,12 @@ function FileDetailView({ file, onBack, onSelectRequest }: { file: FileRecord; o
             ))}
             </div>
             </div>
+          </div>
+          </div>
+
+          {/* Right Column - Quick Actions */}
+          <div className="w-[230px] shrink-0">
+            <QuickActions />
           </div>
         </div>
       </div>
