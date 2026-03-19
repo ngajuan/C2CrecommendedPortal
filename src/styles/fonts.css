@@ -1,0 +1,22 @@
+/* Map Figma-style font names to loaded Google Fonts */
+
+@font-face {
+  font-family: 'Oxygen:Regular';
+  src: local('Oxygen Regular'), local('Oxygen');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oxygen:Bold';
+  src: local('Oxygen Bold'), local('Oxygen');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DM_Serif_Display:Regular';
+  src: local('DM Serif Display Regular'), local('DM Serif Display');
+  font-weight: 400;
+  font-style: normal;
+}
