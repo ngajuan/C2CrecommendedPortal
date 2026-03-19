@@ -1,0 +1,32 @@
+/* Oxygen — Regular (400) */
+@font-face {
+  font-family: 'Oxygen:Regular';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('@fontsource/oxygen/files/oxygen-latin-400-normal.woff2') format('woff2'),
+    url('@fontsource/oxygen/files/oxygen-latin-400-normal.woff') format('woff');
+}
+
+/* Oxygen — Bold (700) */
+@font-face {
+  font-family: 'Oxygen:Bold';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    url('@fontsource/oxygen/files/oxygen-latin-700-normal.woff2') format('woff2'),
+    url('@fontsource/oxygen/files/oxygen-latin-700-normal.woff') format('woff');
+}
+
+/* DM Serif Display — Regular (400) */
+@font-face {
+  font-family: 'DM Serif Display:Regular';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('@fontsource/dm-serif-display/files/dm-serif-display-latin-400-normal.woff2') format('woff2'),
+    url('@fontsource/dm-serif-display/files/dm-serif-display-latin-400-normal.woff') format('woff');
+}
