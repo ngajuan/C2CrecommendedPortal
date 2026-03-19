@@ -9,7 +9,7 @@ import { RequestsPage } from './RequestsPage';
 import { FilesPage } from './FilesPage';
 import { PaymentRequestDetail } from './PaymentRequestDetail';
 import { GenericRequestDetail } from './GenericRequestDetail';
-import { PaymentRequest, AnyRequest, isGenericRequest, isPaymentRequest, getPaymentsTableEntries, getDisplayStatus } from './mockData';
+import { PaymentRequest, AnyRequest, isGenericRequest, isPaymentRequest, getPaymentsTableEntries, getDisplayStatus, StatusDirection } from './mockData';
 
 type SidebarSection = 'files' | 'requests' | 'payments';
 type View = 'payments' | 'requests' | 'files' | 'request_payment' | 'send_wiring' | 'detail';
@@ -23,6 +23,7 @@ interface PaymentsPageProps {
   onSelectRequest: (req: AnyRequest) => void;
   selectedRequest: AnyRequest | null;
   onBackFromDetail: () => void;
+  statusDirection: StatusDirection;
 }
 
 const tabs = ['All', 'Pending', 'Failed', 'Completed', 'Unable to Process', 'Canceled'];
@@ -77,7 +78,7 @@ function StatusIcon({ status, color }: { status: string; color: string }) {
   );
 }
 
-export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, onNavTo, currentView, onSelectRequest, selectedRequest, onBackFromDetail }: PaymentsPageProps) {
+export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, onNavTo, currentView, onSelectRequest, selectedRequest, onBackFromDetail, statusDirection }: PaymentsPageProps) {
   const [activeTab, setActiveTab] = useState('All');
   const [showNewMenu, setShowNewMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -103,7 +104,7 @@ export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, on
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f5f5f5] overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#f5f5f5] overflow-hidden pb-[52px]">
       {/* Top Navigation Bar - Full width */}
       <div className="bg-white relative shadow-[0px_1px_3px_0px_rgba(16,39,84,0.1)] h-[65px] shrink-0 z-[40]">
         {/* Company Logo - CERTIFID wordmark */}
@@ -440,7 +441,7 @@ export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, on
             <PaymentRequestDetail request={selectedRequest as PaymentRequest} onBack={onBackFromDetail} />
           )
         ) : currentView === 'requests' ? (
-          <RequestsPage onSelectRequest={onSelectRequest} />
+          <RequestsPage onSelectRequest={onSelectRequest} statusDirection={statusDirection} />
         ) : currentView === 'files' ? (
           <FilesPage onSelectRequest={onSelectRequest} />
         ) : (

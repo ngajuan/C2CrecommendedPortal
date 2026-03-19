@@ -656,13 +656,13 @@ export function getAllRequests(): AnyRequest[] {
 }
 
 // Get table status for any request type
-export function getAnyRequestTableStatus(req: AnyRequest): string {
+export function getAnyRequestTableStatus(req: AnyRequest, direction: StatusDirection = 2): string {
   if (isGenericRequest(req)) {
     if (req.requestStatus === 'complete') return 'COMPLETE';
     if (req.requestStatus === 'started' || req.requestStatus === 'opened') return 'STARTED';
     return 'SENT';
   }
-  return getRequestTableStatus(req);
+  return getRequestTableStatus(req, direction);
 }
 
 // Get type label for any request
@@ -702,10 +702,21 @@ export function getDisplayStatus(req: PaymentRequest): { label: string; sub?: st
   return { label: 'Unknown', color: '#555' };
 }
 
+// Status direction type: 1 = Payment Submitted terminal, 2 = Pending/Completed in requests table
+export type StatusDirection = 1 | 2;
+
 // For the Requests table
-export function getRequestTableStatus(req: PaymentRequest): string {
-  if (req.paymentStatus === 'completed') return 'PAYMENT COMPLETED';
-  if (req.paymentPath === 'digital' && req.paymentStatus) return 'PAYMENT PENDING';
+export function getRequestTableStatus(req: PaymentRequest, direction: StatusDirection = 2): string {
+  if (direction === 1) {
+    // Option 1: Payment Submitted is terminal for digital
+    if (req.paymentPath === 'digital' && req.paymentStatus) return 'PAYMENT SUBMITTED';
+    if (req.requestStatus === 'certified') return 'CERTIFID';
+    if (req.requestStatus === 'started' || req.requestStatus === 'opened') return 'STARTED';
+    return 'SENT';
+  }
+  // Option 2: Payment statuses shown in requests table
+  if (req.paymentStatus === 'completed') return 'COMPLETED';
+  if (req.paymentPath === 'digital' && req.paymentStatus) return 'PENDING';
   if (req.requestStatus === 'certified') return 'CERTIFID';
   if (req.requestStatus === 'started' || req.requestStatus === 'opened') return 'STARTED';
   return 'SENT';

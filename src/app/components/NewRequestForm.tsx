@@ -165,7 +165,13 @@ export function NewRequestForm({ onCancel, initialMode }: NewRequestFormProps) {
                 </svg>
               </div>
               <div className="capitalize font-['Oxygen:Regular',sans-serif] text-[#555] text-[24px]">
-                <p className="leading-[1.5]">{formData.requestType === 'send_wiring' ? 'Send Wiring Instructions' : 'Request Payment'}</p>
+                <p className="leading-[1.5]">
+                  {formData.requestSubType === 'cash_to_close'
+                    ? 'Cash to Close Payment Request'
+                    : formData.requestSubType === 'earnest_money'
+                    ? 'Earnest Money Payment Request'
+                    : 'Send a Request'}
+                </p>
               </div>
             </div>
             <button onClick={onCancel} className="text-[#555] text-[18px] opacity-50">✕</button>
@@ -302,7 +308,7 @@ export function NewRequestForm({ onCancel, initialMode }: NewRequestFormProps) {
                   <div className="flex items-start w-full">
                     <div className="relative flex-1 basis-0">
                       <button
-                        onClick={() => { updateFormData({ requestSubType: 'earnest_money', digitalPayment: true, wireInstructions: true }); setOtherPaymentReason(''); }}
+                        onClick={() => { updateFormData({ requestSubType: 'earnest_money', digitalPayment: false, wireInstructions: true }); setOtherPaymentReason(''); }}
                         className={`w-full h-[80px] rounded-bl-[6px] rounded-tl-[6px] border border-[#ddd] flex items-center justify-center px-[16px] py-[30px] font-['Oxygen:Bold',sans-serif] text-[16px] text-center ${
                           formData.requestSubType === 'earnest_money' ? 'bg-[#156fbe] text-white' : 'bg-white text-[#555]'
                         }`}
@@ -343,7 +349,7 @@ export function NewRequestForm({ onCancel, initialMode }: NewRequestFormProps) {
                       </div>
                       <div className="flex-1">
                         <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[14px] leading-[1.5] mb-[4px]">Wire instructions only</p>
-                        <p className="font-['Oxygen:Regular',sans-serif] text-[#555] text-[14px] leading-[1.5]">The recipient will receive secure wire instructions via email. Digital payments are available for Cash to Close requests.</p>
+                        <p className="font-['Oxygen:Regular',sans-serif] text-[#555] text-[14px] leading-[1.5]">Your buyer will receive secure wire instructions to complete their earnest money deposit. <span className="font-['Oxygen:Bold',sans-serif] text-[#156fbe]">Digital payment coming soon.</span></p>
                       </div>
                     </div>
                   )}
@@ -357,8 +363,95 @@ export function NewRequestForm({ onCancel, initialMode }: NewRequestFormProps) {
                         </svg>
                       </div>
                       <div className="flex-1">
-                        <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[14px] leading-[1.5] mb-[4px]">Digital payment available for Cash to Close</p>
-                        <p className="font-['Oxygen:Regular',sans-serif] text-[#555] text-[14px] leading-[1.5]">The buyer will be able to pay digitally ($48 fee) or receive wire instructions. Digital payments arrive next business day.</p>
+                        <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[14px] leading-[1.5] mb-[4px]">Digital payment + wire instructions</p>
+                        <p className="font-['Oxygen:Regular',sans-serif] text-[#555] text-[14px] leading-[1.5]">Your buyer will choose between a secure digital payment ($48 fee, next-day delivery) or downloading wire instructions.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Payment Methods Toggle - Cash to Close */}
+                  {formData.requestSubType === 'cash_to_close' && (
+                    <div className="border border-[#ddd] rounded-[6px] p-[20px]">
+                      <div className="flex items-center justify-between mb-[4px]">
+                        <div>
+                          <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[16px] leading-[1.5]">Payment methods</p>
+                        </div>
+                      </div>
+                      {/* Wire instructions - always on */}
+                      <div className="flex items-center justify-between py-[12px] border-b border-[#eee]">
+                        <div className="flex items-center gap-[12px]">
+                          <div className="w-[20px] h-[20px] flex items-center justify-center">
+                            <svg className="w-[16px] h-[16px]" fill="none" viewBox="0 0 16 16">
+                              <rect x="1" y="1" width="14" height="14" rx="2" stroke="#a0a2a4" strokeWidth="1.5" fill="none" />
+                              <path d="M4 8l3 3 5-6" stroke="#00A566" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[14px] leading-[1.5]">Wire instructions</p>
+                            <p className="font-['Oxygen:Regular',sans-serif] text-[#a0a2a4] text-[12px] leading-[1.5]">Always included</p>
+                          </div>
+                        </div>
+                        <span className="font-['Oxygen:Regular',sans-serif] text-[#a0a2a4] text-[12px]">Required</span>
+                      </div>
+                      {/* Digital payment - toggleable */}
+                      <div className="flex items-center justify-between py-[12px]">
+                        <div className="flex items-center gap-[12px]">
+                          <div className="w-[20px] h-[20px] flex items-center justify-center">
+                            <svg className="w-[16px] h-[16px]" fill="none" viewBox="0 0 16 16">
+                              <rect x="1" y="1" width="14" height="14" rx="2" stroke={formData.digitalPayment ? '#00A566' : '#a0a2a4'} strokeWidth="1.5" fill="none" />
+                              {formData.digitalPayment && <path d="M4 8l3 3 5-6" stroke="#00A566" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />}
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[14px] leading-[1.5]">Digital payment</p>
+                            <p className="font-['Oxygen:Regular',sans-serif] text-[#a0a2a4] text-[12px] leading-[1.5]">$48 fee · Next-day delivery</p>
+                          </div>
+                        </div>
+                        {/* Toggle switch */}
+                        <button
+                          onClick={() => updateFormData({ digitalPayment: !formData.digitalPayment })}
+                          className={`relative w-[44px] h-[24px] rounded-full transition-colors ${
+                            formData.digitalPayment ? 'bg-[#00A566]' : 'bg-[#ddd]'
+                          }`}
+                        >
+                          <div className={`absolute top-[2px] w-[20px] h-[20px] rounded-full bg-white shadow transition-transform ${
+                            formData.digitalPayment ? 'translate-x-[22px]' : 'translate-x-[2px]'
+                          }`} />
+                        </button>
+                      </div>
+                      {/* Summary line */}
+                      <div className="mt-[8px] pt-[12px] border-t border-[#eee]">
+                        <p className="font-['Oxygen:Regular',sans-serif] text-[#555] text-[13px] leading-[1.5]">
+                          {formData.digitalPayment
+                            ? '→ Buyer will choose between digital payment or wire instructions'
+                            : '→ Buyer will receive wire instructions only'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Payment Methods - Earnest Money (wire only) */}
+                  {formData.requestSubType === 'earnest_money' && (
+                    <div className="border border-[#ddd] rounded-[6px] p-[20px]">
+                      <div className="flex items-center justify-between mb-[4px]">
+                        <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[16px] leading-[1.5]">Payment methods</p>
+                      </div>
+                      {/* Wire instructions - always on */}
+                      <div className="flex items-center justify-between py-[12px]">
+                        <div className="flex items-center gap-[12px]">
+                          <div className="w-[20px] h-[20px] flex items-center justify-center">
+                            <svg className="w-[16px] h-[16px]" fill="none" viewBox="0 0 16 16">
+                              <rect x="1" y="1" width="14" height="14" rx="2" stroke="#a0a2a4" strokeWidth="1.5" fill="none" />
+                              <path d="M4 8l3 3 5-6" stroke="#00A566" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[14px] leading-[1.5]">Wire instructions only</p>
+                            <p className="font-['Oxygen:Regular',sans-serif] text-[#a0a2a4] text-[12px] leading-[1.5]">Always included</p>
+                          </div>
+                        </div>
+                        <span className="font-['Oxygen:Regular',sans-serif] text-[#a0a2a4] text-[12px]">Required</span>
                       </div>
                     </div>
                   )}
@@ -594,8 +687,11 @@ export function NewRequestForm({ onCancel, initialMode }: NewRequestFormProps) {
                           />
                         </div>
                         <div className="flex-[1_0_0] flex flex-col gap-[8px]">
-                          <div className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[16px]">
+                          <div className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[16px] flex items-center gap-[6px]">
                             <p className="leading-[1.5]">Closing date</p>
+                            {formData.requestSubType === 'cash_to_close' && (
+                              <span className="font-['Oxygen:Bold',sans-serif] text-[#E74C3C] text-[14px]">*</span>
+                            )}
                           </div>
                           <input
                             type="date"

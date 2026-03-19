@@ -1,22 +1,24 @@
 import { useState } from 'react';
-import { getAllRequests, getAnyRequestTableStatus, getAnyRequestType, getAnyRequestSubtype, isGenericRequest, isPaymentRequest, AnyRequest } from './mockData';
+import { getAllRequests, getAnyRequestTableStatus, getAnyRequestType, getAnyRequestSubtype, isGenericRequest, isPaymentRequest, AnyRequest, StatusDirection } from './mockData';
 import svgPaths from '@/imports/svg-qfkwezagl1';
 import searchSvg from '@/imports/svg-8lob6ng13t';
 
 interface RequestsPageProps {
   onSelectRequest: (req: AnyRequest) => void;
+  statusDirection: StatusDirection;
 }
 
-const tabs = ['All', 'Sent', 'Started', 'Payment Pending', 'Payment Completed', 'Complete', 'CertifID', 'Cancelled'];
+const tabsOption1 = ['All', 'Sent', 'Started', 'Payment Submitted', 'Complete', 'CertifID', 'Cancelled'];
+const tabsOption2 = ['All', 'Sent', 'Started', 'Pending', 'Completed', 'Complete', 'CertifID', 'Cancelled'];
 
 function StatusIcon({ status }: { status: string }) {
-  const color = status === 'CERTIFID' || status === 'COMPLETE' || status === 'PAYMENT COMPLETED' ? '#00A566' 
+  const color = status === 'CERTIFID' || status === 'COMPLETE' || status === 'COMPLETED' ? '#00A566'
     : status === 'CANCELLED' ? '#555'
-    : status === 'HIGH RISK' ? '#E74C3C' 
+    : status === 'HIGH RISK' ? '#E74C3C'
     : '#102754';
-  
-  // Clock icon for PAYMENT PENDING
-  if (status === 'PAYMENT PENDING') {
+
+  // Clock icon for PENDING and PAYMENT SUBMITTED
+  if (status === 'PENDING' || status === 'PAYMENT SUBMITTED') {
     return (
       <svg className="w-[20px] h-[20px] shrink-0" fill="none" viewBox="0 0 20 20">
         <path d={svgPaths.p62ebf00} fill="#102754" />
@@ -25,8 +27,8 @@ function StatusIcon({ status }: { status: string }) {
     );
   }
 
-  // Checkmark for COMPLETE and PAYMENT COMPLETED
-  if (status === 'COMPLETE' || status === 'PAYMENT COMPLETED') {
+  // Checkmark for COMPLETE, COMPLETED
+  if (status === 'COMPLETE' || status === 'COMPLETED') {
     return (
       <svg className="w-[20px] h-[20px] shrink-0" fill="none" viewBox="0 0 20 20">
         <path clipRule="evenodd" d={svgPaths.p16f36b00} fill={color} fillRule="evenodd" />
@@ -34,7 +36,7 @@ function StatusIcon({ status }: { status: string }) {
       </svg>
     );
   }
-  
+
   return (
     <svg className="w-[20px] h-[20px] shrink-0" fill="none" viewBox="0 0 20 20">
       <path clipRule="evenodd" d={svgPaths.p16f36b00} fill={color} fillRule="evenodd" />
@@ -49,17 +51,21 @@ function StatusIcon({ status }: { status: string }) {
   );
 }
 
-export function RequestsPage({ onSelectRequest }: RequestsPageProps) {
+export function RequestsPage({ onSelectRequest, statusDirection }: RequestsPageProps) {
   const [activeTab, setActiveTab] = useState('All');
   const allRequests = getAllRequests();
+  const tabs = statusDirection === 1 ? tabsOption1 : tabsOption2;
 
   const filteredRequests = allRequests.filter(req => {
     if (activeTab === 'All') return true;
-    const tableStatus = getAnyRequestTableStatus(req);
+    const tableStatus = getAnyRequestTableStatus(req, statusDirection);
     if (activeTab === 'Sent') return tableStatus === 'SENT';
     if (activeTab === 'Started') return tableStatus === 'STARTED';
-    if (activeTab === 'Payment Pending') return tableStatus === 'PAYMENT PENDING';
-    if (activeTab === 'Payment Completed') return tableStatus === 'PAYMENT COMPLETED';
+    // Option 1 tabs
+    if (activeTab === 'Payment Submitted') return tableStatus === 'PAYMENT SUBMITTED';
+    // Option 2 tabs
+    if (activeTab === 'Pending') return tableStatus === 'PENDING';
+    if (activeTab === 'Completed') return tableStatus === 'COMPLETED';
     if (activeTab === 'Complete') return tableStatus === 'COMPLETE';
     if (activeTab === 'CertifID') return tableStatus === 'CERTIFID';
     return true;
@@ -149,7 +155,7 @@ export function RequestsPage({ onSelectRequest }: RequestsPageProps) {
 
             {/* Rows */}
             {filteredRequests.map(req => {
-              const tableStatus = getAnyRequestTableStatus(req);
+              const tableStatus = getAnyRequestTableStatus(req, statusDirection);
               const typeLabel = getAnyRequestType(req);
               const subtype = getAnyRequestSubtype(req);
               const isGeneric = isGenericRequest(req);
@@ -168,7 +174,7 @@ export function RequestsPage({ onSelectRequest }: RequestsPageProps) {
                       <StatusIcon status={tableStatus} />
                       <p className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[14px] tracking-[1px] uppercase whitespace-nowrap">{tableStatus}</p>
                     </div>
-                    {tableStatus === 'PAYMENT PENDING' && isPaymentRequest(req) && req.estimatedArrival && (
+                    {(tableStatus === 'PENDING' || tableStatus === 'PAYMENT SUBMITTED') && isPaymentRequest(req) && req.estimatedArrival && (
                       <p className="font-['Oxygen:Regular',sans-serif] text-[#a0a2a4] text-[14px] mt-[2px]">
                         {`Estimated arrival ${req.estimatedArrival}`.replace(/January|February|March|April|May|June|July|August|September|October|November|December/g, m => m.slice(0, 3))}
                       </p>
