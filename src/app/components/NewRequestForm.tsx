@@ -34,9 +34,10 @@ interface NewRecipientData {
 interface NewRequestFormProps {
   onCancel?: () => void;
   initialMode?: 'request_payment' | 'send_wiring';
+  entryPoint?: 'send_request' | 'request_payment';
 }
 
-export function NewRequestForm({ onCancel, initialMode }: NewRequestFormProps) {
+export function NewRequestForm({ onCancel, initialMode, entryPoint = 'send_request' }: NewRequestFormProps) {
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
   const [showFullForm, setShowFullForm] = useState(true);
   const [showAddRecipient, setShowAddRecipient] = useState(false);
@@ -230,61 +231,65 @@ export function NewRequestForm({ onCancel, initialMode }: NewRequestFormProps) {
               </div>
             </div>
 
-            {/* Divider */}
-            <div className="h-0 w-full">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1152 1">
-                <line stroke="#EEEEEE" x1="0" x2="1152" y1="0.5" y2="0.5" />
-              </svg>
-            </div>
+            {/* Request Type Section - only shown for "Send Request" entry point */}
+            {entryPoint === 'send_request' && (
+              <>
+                {/* Divider */}
+                <div className="h-0 w-full">
+                  <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1152 1">
+                    <line stroke="#EEEEEE" x1="0" x2="1152" y1="0.5" y2="0.5" />
+                  </svg>
+                </div>
 
-            {/* Request Type Section */}
-            <div className="flex gap-[80px] items-start w-full">
-              <div className="flex-[1_0_0] flex flex-col gap-[4px] items-start min-h-px min-w-px text-[#555]">
-                <div className="font-['Oxygen:Bold',sans-serif] text-[20px]">
-                  <p className="leading-[1.5]">Request type</p>
+                <div className="flex gap-[80px] items-start w-full">
+                  <div className="flex-[1_0_0] flex flex-col gap-[4px] items-start min-h-px min-w-px text-[#555]">
+                    <div className="font-['Oxygen:Bold',sans-serif] text-[20px]">
+                      <p className="leading-[1.5]">Request type</p>
+                    </div>
+                    <p className="font-['Oxygen:Regular',sans-serif] leading-[1.5] text-[16px]">
+                      Select which type of request you would like to send to this recipient.
+                    </p>
+                    <p className="font-['Oxygen:Regular',sans-serif] leading-[1.5] text-[16px] mt-[12px]">
+                      Learn more about <a href="#" className="text-[#156fbe] underline">request types</a>.
+                    </p>
+                  </div>
+                  <div className="bg-white p-[30px] rounded-[4px] shadow-[0px_3px_10.25px_0px_rgba(16,39,84,0.1)] w-[796px]">
+                    <div className="flex items-start w-full">
+                      <div className="relative flex-1 basis-0">
+                        <button
+                          onClick={() => updateFormData({ genericRequestType: 'send' })}
+                          className={`w-full h-[80px] rounded-bl-[6px] rounded-tl-[6px] border border-[#ddd] flex items-center justify-center px-[16px] py-[30px] font-['Oxygen:Bold',sans-serif] text-[16px] text-center ${
+                            formData.genericRequestType === 'send' ? 'bg-[#156fbe] text-white' : 'bg-white text-[#555]'
+                          }`}
+                        >
+                          <p className="leading-[1.5]">Send request</p>
+                        </button>
+                      </div>
+                      <div className="relative flex-1 basis-0">
+                        <button
+                          onClick={() => updateFormData({ genericRequestType: 'collect' })}
+                          className={`w-full h-[80px] border-t border-b border-[#ddd] flex items-center justify-center px-[16px] py-[30px] font-['Oxygen:Bold',sans-serif] text-[16px] text-center ${
+                            formData.genericRequestType === 'collect' ? 'bg-[#156fbe] text-white' : 'bg-white text-[#555]'
+                          }`}
+                        >
+                          <p className="leading-[1.5]">Collect bank details</p>
+                        </button>
+                      </div>
+                      <div className="relative flex-1 basis-0">
+                        <button
+                          onClick={() => updateFormData({ genericRequestType: 'confirm' })}
+                          className={`w-full h-[80px] rounded-br-[6px] rounded-tr-[6px] border border-[#ddd] flex items-center justify-center px-[16px] py-[30px] font-['Oxygen:Bold',sans-serif] text-[16px] text-center ${
+                            formData.genericRequestType === 'confirm' ? 'bg-[#156fbe] text-white' : 'bg-white text-[#555]'
+                          }`}
+                        >
+                          <p className="leading-[1.5]">Confirm bank details</p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="font-['Oxygen:Regular',sans-serif] leading-[1.5] text-[16px]">
-                  Select which type of request you would like to send to this recipient.
-                </p>
-                <p className="font-['Oxygen:Regular',sans-serif] leading-[1.5] text-[16px] mt-[12px]">
-                  Learn more about <a href="#" className="text-[#156fbe] underline">request types</a>.
-                </p>
-              </div>
-              <div className="bg-white p-[30px] rounded-[4px] shadow-[0px_3px_10.25px_0px_rgba(16,39,84,0.1)] w-[796px]">
-                <div className="flex items-start w-full">
-                  <div className="relative flex-1 basis-0">
-                    <button
-                      onClick={() => updateFormData({ genericRequestType: 'send' })}
-                      className={`w-full h-[80px] rounded-bl-[6px] rounded-tl-[6px] border border-[#ddd] flex items-center justify-center px-[16px] py-[30px] font-['Oxygen:Bold',sans-serif] text-[16px] text-center ${
-                        formData.genericRequestType === 'send' ? 'bg-[#156fbe] text-white' : 'bg-white text-[#555]'
-                      }`}
-                    >
-                      <p className="leading-[1.5]">Send request</p>
-                    </button>
-                  </div>
-                  <div className="relative flex-1 basis-0">
-                    <button
-                      onClick={() => updateFormData({ genericRequestType: 'collect' })}
-                      className={`w-full h-[80px] border-t border-b border-[#ddd] flex items-center justify-center px-[16px] py-[30px] font-['Oxygen:Bold',sans-serif] text-[16px] text-center ${
-                        formData.genericRequestType === 'collect' ? 'bg-[#156fbe] text-white' : 'bg-white text-[#555]'
-                      }`}
-                    >
-                      <p className="leading-[1.5]">Collect bank details</p>
-                    </button>
-                  </div>
-                  <div className="relative flex-1 basis-0">
-                    <button
-                      onClick={() => updateFormData({ genericRequestType: 'confirm' })}
-                      className={`w-full h-[80px] rounded-br-[6px] rounded-tr-[6px] border border-[#ddd] flex items-center justify-center px-[16px] py-[30px] font-['Oxygen:Bold',sans-serif] text-[16px] text-center ${
-                        formData.genericRequestType === 'confirm' ? 'bg-[#156fbe] text-white' : 'bg-white text-[#555]'
-                      }`}
-                    >
-                      <p className="leading-[1.5]">Confirm bank details</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
 
             {/* Divider */}
             <div className="h-0 w-full">

@@ -5,7 +5,7 @@ import { RequestsPage } from '@/app/components/RequestsPage';
 import { FilesPage } from '@/app/components/FilesPage';
 import { PaymentRequestDetail } from '@/app/components/PaymentRequestDetail';
 import { GenericRequestDetail } from '@/app/components/GenericRequestDetail';
-import { AnyRequest, isGenericRequest, getAnyDetailHostTab, PaymentRequest, StatusDirection } from '@/app/components/mockData';
+import { AnyRequest, isGenericRequest, getAnyDetailHostTab, PaymentRequest, StatusDirection, EntryPoint } from '@/app/components/mockData';
 
 type View = 'payments' | 'requests' | 'files' | 'request_payment' | 'send_wiring' | 'detail';
 type SidebarSection = 'files' | 'requests' | 'payments';
@@ -17,6 +17,7 @@ export default function App() {
   const [previousView, setPreviousView] = useState<View>('payments');
   const [previousSidebar, setPreviousSidebar] = useState<SidebarSection>('payments');
   const [statusDirection, setStatusDirection] = useState<StatusDirection>(1);
+  const [entryPoint, setEntryPoint] = useState<EntryPoint>('send_request');
 
   const handleNavTo = (section: SidebarSection) => {
     setActiveSidebar(section);
@@ -49,6 +50,7 @@ export default function App() {
         <NewRequestForm
           onCancel={handleBackFromForm}
           initialMode={currentView === 'send_wiring' ? 'send_wiring' : 'request_payment'}
+          entryPoint={entryPoint}
         />
       </div>
     );
@@ -66,10 +68,38 @@ export default function App() {
         selectedRequest={selectedRequest}
         onBackFromDetail={handleBackFromDetail}
         statusDirection={statusDirection}
+        entryPoint={entryPoint}
       />
-      {/* Status Direction Toggle - Fixed bottom bar */}
+      {/* Toggle Bars - Fixed bottom */}
       <div className="fixed bottom-0 left-0 right-0 z-[9999] bg-[#102754] shadow-[0px_-2px_12px_rgba(0,0,0,0.15)]">
-        <div className="flex items-center justify-center gap-[16px] px-[24px] py-[12px]">
+        {/* Entry Points Toggle */}
+        <div className="flex items-center justify-center gap-[16px] px-[24px] pt-[12px] pb-[8px] border-b border-[rgba(255,255,255,0.1)]">
+          <span className="font-['Oxygen:Bold',sans-serif] text-white text-[13px] uppercase tracking-[1px]">Entry Points:</span>
+          <div className="flex bg-[rgba(255,255,255,0.1)] rounded-[6px] p-[3px]">
+            <button
+              onClick={() => setEntryPoint('send_request')}
+              className={`px-[16px] py-[8px] rounded-[4px] font-['Oxygen:Bold',sans-serif] text-[13px] transition-all ${
+                entryPoint === 'send_request'
+                  ? 'bg-[#156fbe] text-white shadow-[0px_1px_3px_rgba(0,0,0,0.2)]'
+                  : 'text-[#b7deff] hover:text-white'
+              }`}
+            >
+              Send Request
+            </button>
+            <button
+              onClick={() => setEntryPoint('request_payment')}
+              className={`px-[16px] py-[8px] rounded-[4px] font-['Oxygen:Bold',sans-serif] text-[13px] transition-all ${
+                entryPoint === 'request_payment'
+                  ? 'bg-[#156fbe] text-white shadow-[0px_1px_3px_rgba(0,0,0,0.2)]'
+                  : 'text-[#b7deff] hover:text-white'
+              }`}
+            >
+              Request Payment
+            </button>
+          </div>
+        </div>
+        {/* Status Direction Toggle */}
+        <div className="flex items-center justify-center gap-[16px] px-[24px] pt-[8px] pb-[12px]">
           <span className="font-['Oxygen:Bold',sans-serif] text-white text-[13px] uppercase tracking-[1px]">Status Direction:</span>
           <div className="flex bg-[rgba(255,255,255,0.1)] rounded-[6px] p-[3px]">
             <button

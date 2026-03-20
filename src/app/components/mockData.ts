@@ -704,6 +704,7 @@ export function getDisplayStatus(req: PaymentRequest): { label: string; sub?: st
 
 // Status direction type: 1 = Payment Submitted terminal, 2 = Pending/Completed in requests table
 export type StatusDirection = 1 | 2;
+export type EntryPoint = 'send_request' | 'request_payment';
 
 // For the Requests table
 export function getRequestTableStatus(req: PaymentRequest, direction: StatusDirection = 2): string {

@@ -9,7 +9,7 @@ import { RequestsPage } from './RequestsPage';
 import { FilesPage } from './FilesPage';
 import { PaymentRequestDetail } from './PaymentRequestDetail';
 import { GenericRequestDetail } from './GenericRequestDetail';
-import { PaymentRequest, AnyRequest, isGenericRequest, isPaymentRequest, getPaymentsTableEntries, getDisplayStatus, StatusDirection } from './mockData';
+import { PaymentRequest, AnyRequest, isGenericRequest, isPaymentRequest, getPaymentsTableEntries, getDisplayStatus, StatusDirection, EntryPoint } from './mockData';
 
 type SidebarSection = 'files' | 'requests' | 'payments';
 type View = 'payments' | 'requests' | 'files' | 'request_payment' | 'send_wiring' | 'detail';
@@ -24,6 +24,7 @@ interface PaymentsPageProps {
   selectedRequest: AnyRequest | null;
   onBackFromDetail: () => void;
   statusDirection: StatusDirection;
+  entryPoint: EntryPoint;
 }
 
 const tabs = ['All', 'Pending', 'Failed', 'Completed', 'Unable to Process', 'Canceled'];
@@ -78,7 +79,7 @@ function StatusIcon({ status, color }: { status: string; color: string }) {
   );
 }
 
-export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, onNavTo, currentView, onSelectRequest, selectedRequest, onBackFromDetail, statusDirection }: PaymentsPageProps) {
+export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, onNavTo, currentView, onSelectRequest, selectedRequest, onBackFromDetail, statusDirection, entryPoint }: PaymentsPageProps) {
   const [activeTab, setActiveTab] = useState('All');
   const [showNewMenu, setShowNewMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -104,7 +105,7 @@ export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, on
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f5f5f5] overflow-hidden pb-[52px]">
+    <div className="flex flex-col h-screen bg-[#f5f5f5] overflow-hidden pb-[96px]">
       {/* Top Navigation Bar - Full width */}
       <div className="bg-white relative shadow-[0px_1px_3px_0px_rgba(16,39,84,0.1)] h-[65px] shrink-0 z-[40]">
         {/* Company Logo - CERTIFID wordmark */}
@@ -192,7 +193,94 @@ export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, on
             </div>
           </button>
           {/* Dropdown Menu */}
-          {showNewMenu && (
+          {showNewMenu && entryPoint === 'request_payment' && (
+            <div className="absolute top-[60px] right-0 bg-white rounded-[6px] shadow-[0px_3px_10.25px_0px_rgba(16,39,84,0.1)] z-[9999] flex gap-[8px] p-[8px]">
+              {/* Left column */}
+              <div className="content-stretch flex flex-col gap-[8px] items-start shrink-0">
+                <button onClick={() => handleMenuAction('request_payment')} className="content-stretch flex gap-[16px] items-start p-[8px] rounded-[6px] hover:bg-[#f5f7fa] transition-colors text-left w-[226px]">
+                  <div className="bg-[#e2f2ff] overflow-clip relative rounded-[6px] shrink-0 size-[40px]">
+                    <div className="absolute inset-[20%]"><div className="absolute inset-[9.37%_9.37%_9.38%_9.38%]">
+                      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.5013 19.501"><path d={figmaMenuSvg.p6fae580} fill="#156FBE" /></svg>
+                    </div></div>
+                  </div>
+                  <div className="content-stretch flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[0] min-h-px min-w-px not-italic">
+                    <div className="flex flex-col font-['Oxygen:Bold',sans-serif] justify-center shrink-0 text-[#156fbe] text-[14px] w-[154px]"><p className="leading-[1.5]">Request a payment</p></div>
+                    <div className="flex flex-col font-['Oxygen:Regular',sans-serif] justify-center shrink-0 text-[#555] text-[12px] w-[154px]"><p className="leading-[1.5]">Send wire instructions or request digital payment</p></div>
+                  </div>
+                </button>
+                <button onClick={() => handleMenuAction('collect_bank_details')} className="content-stretch flex gap-[16px] items-start p-[8px] rounded-[6px] hover:bg-[#f5f7fa] transition-colors text-left w-[226px]">
+                  <div className="bg-[#e2f2ff] overflow-clip relative rounded-[6px] shrink-0 size-[40px]">
+                    <div className="absolute inset-[20%]"><div className="absolute inset-[9.37%_9.37%_9.38%_9.38%]">
+                      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.5013 19.501"><path d={figmaMenuSvg.p6fae580} fill="#156FBE" /></svg>
+                    </div></div>
+                  </div>
+                  <div className="content-stretch flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[0] min-h-px min-w-px not-italic">
+                    <div className="flex flex-col font-['Oxygen:Bold',sans-serif] justify-center shrink-0 text-[#156fbe] text-[14px] w-[154px]"><p className="leading-[1.5]">Collect or confirm bank details</p></div>
+                    <div className="flex flex-col font-['Oxygen:Regular',sans-serif] justify-center shrink-0 text-[#555] text-[12px] w-[154px]"><p className="leading-[1.5]">Collect or confirm bank details for payment</p></div>
+                  </div>
+                </button>
+                <button onClick={() => handleMenuAction('validate_payoff')} className="content-stretch flex gap-[16px] items-start p-[8px] rounded-[6px] hover:bg-[#f5f7fa] transition-colors text-left w-[226px]">
+                  <div className="bg-[#e2f2ff] overflow-clip relative rounded-[6px] shrink-0 size-[40px]">
+                    <div className="absolute inset-[20%]"><div className="absolute inset-[8.33%_14.37%_8.9%_14.58%]">
+                      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 17.052 19.8647"><g><path d={figmaMenuSvg.p501f100} fill="#156FBE" /><path d={figmaMenuSvg.p2e138a00} fill="#156FBE" /><path clipRule="evenodd" d={figmaMenuSvg.p175ef600} fill="#156FBE" fillRule="evenodd" /></g></svg>
+                    </div></div>
+                  </div>
+                  <div className="content-stretch flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[0] min-h-px min-w-px not-italic">
+                    <div className="flex flex-col font-['Oxygen:Bold',sans-serif] justify-center shrink-0 text-[#156fbe] text-[14px] w-[154px]"><p className="leading-[1.5]">Validate a payoff</p></div>
+                    <div className="flex flex-col font-['Oxygen:Regular',sans-serif] justify-center shrink-0 text-[#555] text-[12px] w-[154px]"><p className="leading-[1.5]">Validate wiring instructions for a lender payoff</p></div>
+                  </div>
+                </button>
+                <button onClick={() => handleMenuAction('order_payoff')} className="content-stretch flex gap-[16px] items-start p-[8px] rounded-[6px] hover:bg-[#f5f7fa] transition-colors text-left w-[226px]">
+                  <div className="bg-[#e2f2ff] overflow-clip relative rounded-[6px] shrink-0 size-[40px]">
+                    <div className="absolute inset-[20%]"><div className="absolute inset-[8.33%_14.37%_8.9%_14.58%]">
+                      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 17.052 19.8647"><g><path d={figmaMenuSvg.p135cf540} fill="#156FBE" /><path clipRule="evenodd" d={figmaMenuSvg.p3ca7f200} fill="#156FBE" fillRule="evenodd" /></g></svg>
+                    </div></div>
+                  </div>
+                  <div className="content-stretch flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[0] min-h-px min-w-px not-italic">
+                    <div className="flex flex-col font-['Oxygen:Bold',sans-serif] justify-center shrink-0 text-[#156fbe] text-[14px] w-[154px]"><p className="leading-[1.5]">Order a payoff</p></div>
+                    <div className="flex flex-col font-['Oxygen:Regular',sans-serif] justify-center shrink-0 text-[#555] text-[12px] w-[154px]"><p className="leading-[1.5]">Order mortgage payoff statements</p></div>
+                  </div>
+                </button>
+              </div>
+              {/* Right column */}
+              <div className="content-stretch flex flex-col gap-[8px] items-start shrink-0">
+                <button onClick={() => handleMenuAction('verify_business')} className="content-stretch flex gap-[16px] items-start p-[8px] rounded-[6px] hover:bg-[#f5f7fa] transition-colors text-left w-[226px]">
+                  <div className="bg-[#e2f2ff] overflow-clip relative rounded-[6px] shrink-0 size-[40px]">
+                    <div className="absolute inset-[20%]"><div className="-translate-x-1/2 -translate-y-1/2 absolute h-[18.52px] left-[calc(50%+0.7px)] top-[calc(50%-0.03px)] w-[19.5px]">
+                      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 19.4996 18.5199"><g><path d={figmaMenuSvg.p2ddc3a30} fill="#156FBE" /><path d={figmaMenuSvg.p15b00080} fill="#156FBE" /><path d={figmaMenuSvg.p1c0add0} fill="#156FBE" /><path d={figmaMenuSvg.p33e7cf80} fill="#156FBE" /><path d={figmaMenuSvg.p274ef400} fill="#156FBE" /><path d={figmaMenuSvg.ped09b00} fill="#156FBE" /><path d={figmaMenuSvg.p34371500} fill="#156FBE" /></g></svg>
+                    </div></div>
+                  </div>
+                  <div className="content-stretch flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[0] min-h-px min-w-px not-italic">
+                    <div className="flex flex-col font-['Oxygen:Bold',sans-serif] justify-center shrink-0 text-[#156fbe] text-[14px] w-[154px]"><p className="leading-[1.5]">Verify a business</p></div>
+                    <div className="flex flex-col font-['Oxygen:Regular',sans-serif] justify-center shrink-0 text-[#555] text-[12px] w-[154px]"><p className="leading-[1.5]">Verify wiring instructions for a business</p></div>
+                  </div>
+                </button>
+                <button onClick={() => handleMenuAction('verify_identity')} className="content-stretch flex gap-[16px] items-start p-[8px] rounded-[6px] hover:bg-[#f5f7fa] transition-colors text-left w-[226px]">
+                  <div className="bg-[#e2f2ff] overflow-clip relative rounded-[6px] shrink-0 size-[40px]">
+                    <div className="absolute inset-[20%]"><div className="absolute inset-[12.5%_4.17%]">
+                      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 22 18"><g><path d={figmaMenuSvg.p27a988f0} fill="#156FBE" /><path d={figmaMenuSvg.p2a86f900} fill="#156FBE" /><path d={figmaMenuSvg.p3dec1880} fill="#156FBE" /></g></svg>
+                    </div></div>
+                  </div>
+                  <div className="content-stretch flex flex-[1_0_0] flex-col gap-[4px] items-start leading-[0] min-h-px min-w-px not-italic">
+                    <div className="flex flex-col font-['Oxygen:Bold',sans-serif] justify-center shrink-0 text-[#156fbe] text-[14px] w-[154px]"><p className="leading-[1.5]">Verify an identity</p></div>
+                    <div className="flex flex-col font-['Oxygen:Regular',sans-serif] justify-center shrink-0 text-[#555] text-[12px] w-[154px]"><p className="leading-[1.5]">Ask a customer to verify their identity</p></div>
+                  </div>
+                </button>
+                <button onClick={() => handleMenuAction('request_esignature')} className="content-stretch flex gap-[16px] items-start p-[8px] rounded-[6px] hover:bg-[#f5f7fa] transition-colors text-left">
+                  <div className="bg-[#e2f2ff] overflow-clip relative rounded-[6px] shrink-0 size-[40px]">
+                    <div className="absolute inset-[20%]"><div className="absolute inset-[8.33%]">
+                      <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20.0001 20"><path d={figmaMenuSvg.p3db23b00} fill="#156FBE" /></svg>
+                    </div></div>
+                  </div>
+                  <div className="content-stretch flex flex-col gap-[4px] items-start leading-[0] not-italic shrink-0 w-[154px]">
+                    <div className="flex flex-col font-['Oxygen:Bold',sans-serif] justify-center shrink-0 text-[#156fbe] text-[14px] whitespace-nowrap"><p className="leading-[1.5]">Request an eSignature</p></div>
+                    <div className="flex flex-col font-['Oxygen:Regular',sans-serif] justify-center shrink-0 text-[#555] text-[12px] w-[154px]"><p className="leading-[1.5]">Request a secure virtual signature from customers</p></div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+          {showNewMenu && entryPoint === 'send_request' && (
             <div className="absolute top-[60px] right-0 bg-white rounded-[6px] shadow-[0px_3px_10.25px_0px_rgba(16,39,84,0.1)] z-[9999] flex gap-[8px] p-[8px]">
               {/* Left column */}
               <div className="content-stretch flex flex-col gap-[8px] items-start shrink-0">
