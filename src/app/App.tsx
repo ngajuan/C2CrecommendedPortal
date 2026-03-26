@@ -17,7 +17,7 @@ export default function App() {
   const [previousView, setPreviousView] = useState<View>('payments');
   const [previousSidebar, setPreviousSidebar] = useState<SidebarSection>('payments');
   const [statusDirection, setStatusDirection] = useState<StatusDirection>(1);
-  const [entryPoint, setEntryPoint] = useState<EntryPoint>('send_request');
+  const [entryPoint, setEntryPoint] = useState<EntryPoint>('request_payment');
   const [showControls, setShowControls] = useState(false);
   const controlsRef = useRef<HTMLDivElement>(null);
 
@@ -68,16 +68,6 @@ export default function App() {
             <p className="font-['Oxygen:Regular',sans-serif] text-[#b7deff] text-[11px] uppercase tracking-[1px] mb-[6px]">Entry Points</p>
             <div className="flex bg-[rgba(255,255,255,0.1)] rounded-[6px] p-[3px]">
               <button
-                onClick={() => setEntryPoint('send_request')}
-                className={`flex-1 px-[12px] py-[7px] rounded-[4px] font-['Oxygen:Bold',sans-serif] text-[12px] transition-all ${
-                  entryPoint === 'send_request'
-                    ? 'bg-[#156fbe] text-white shadow-[0px_1px_3px_rgba(0,0,0,0.2)]'
-                    : 'text-[#b7deff] hover:text-white'
-                }`}
-              >
-                Send Request
-              </button>
-              <button
                 onClick={() => setEntryPoint('request_payment')}
                 className={`flex-1 px-[12px] py-[7px] rounded-[4px] font-['Oxygen:Bold',sans-serif] text-[12px] transition-all ${
                   entryPoint === 'request_payment'
@@ -86,6 +76,16 @@ export default function App() {
                 }`}
               >
                 Request Payment
+              </button>
+              <button
+                onClick={() => setEntryPoint('send_request')}
+                className={`flex-1 px-[12px] py-[7px] rounded-[4px] font-['Oxygen:Bold',sans-serif] text-[12px] transition-all ${
+                  entryPoint === 'send_request'
+                    ? 'bg-[#156fbe] text-white shadow-[0px_1px_3px_rgba(0,0,0,0.2)]'
+                    : 'text-[#b7deff] hover:text-white'
+                }`}
+              >
+                Send Request
               </button>
             </div>
           </div>
