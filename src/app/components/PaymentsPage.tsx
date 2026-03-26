@@ -105,7 +105,7 @@ export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, on
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f5f5f5] overflow-hidden pb-[96px]">
+    <div className="flex flex-col h-screen bg-[#f5f5f5] overflow-hidden">
       {/* Top Navigation Bar - Full width */}
       <div className="bg-white relative shadow-[0px_1px_3px_0px_rgba(16,39,84,0.1)] h-[65px] shrink-0 z-[40]">
         {/* Company Logo - CERTIFID wordmark */}
@@ -393,7 +393,7 @@ export function PaymentsPage({ onRequestPayment, onSendWiring, activeSidebar, on
       {/* Body: Sidebar + Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="bg-[#102754] content-stretch flex flex-col gap-[16px] items-start px-[24px] py-[16px] shrink-0 w-[240px]">
+        <div className="bg-[#102754] content-stretch flex flex-col gap-[16px] items-start px-[24px] py-[16px] shrink-0 w-[240px] overflow-y-auto">
           {/* Files */}
           <button onClick={() => onNavTo('files')} className={`${activeSidebar === 'files' ? 'bg-[rgba(255,255,255,0.15)]' : 'bg-[rgba(255,255,255,0.05)]'} content-stretch flex gap-[8px] h-[48px] items-center overflow-clip pl-[12px] pr-[8px] rounded-[6px] shrink-0 w-full cursor-pointer`}>
             <div className="relative shrink-0 size-[24px]">

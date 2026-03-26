@@ -42,6 +42,7 @@ export function NewRequestForm({ onCancel, initialMode, entryPoint = 'send_reque
   const [showFullForm, setShowFullForm] = useState(true);
   const [showAddRecipient, setShowAddRecipient] = useState(false);
   const [otherPaymentReason, setOtherPaymentReason] = useState('');
+  const [paymentAmountError, setPaymentAmountError] = useState('');
   const [newRecipient, setNewRecipient] = useState<NewRecipientData>({
     firstName: '',
     lastName: '',
@@ -101,6 +102,14 @@ export function NewRequestForm({ onCancel, initialMode, entryPoint = 'send_reque
 
   const handlePaymentAmountChange = (value: string) => {
     const formatted = formatCurrency(value);
+    // Extract numeric value for validation
+    const digits = value.replace(/\D/g, '');
+    const numericValue = digits ? parseInt(digits, 10) : 0;
+    if (numericValue > 500000) {
+      setPaymentAmountError('Payment amount cannot exceed $500,000');
+    } else {
+      setPaymentAmountError('');
+    }
     updateFormData({ paymentAmount: formatted });
   };
 
@@ -684,12 +693,19 @@ export function NewRequestForm({ onCancel, initialMode, entryPoint = 'send_reque
                           <div className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[16px]">
                             <p className="leading-[1.5]">Payment amount</p>
                           </div>
-                          <input
-                            type="text"
-                            value={formData.paymentAmount}
-                            onChange={(e) => handlePaymentAmountChange(e.target.value)}
-                            className="bg-white h-[40px] w-full rounded-[6px] border border-[#ddd] px-[12px] font-['Oxygen:Regular',sans-serif] text-[#555] text-[16px]"
-                          />
+                          <div className="relative">
+                            <span className="absolute left-[12px] top-1/2 -translate-y-1/2 font-['Oxygen:Regular',sans-serif] text-[#999] text-[16px] pointer-events-none">$</span>
+                            <input
+                              type="text"
+                              value={formData.paymentAmount ? formData.paymentAmount.replace(/^\$/, '') : ''}
+                              onChange={(e) => handlePaymentAmountChange(e.target.value)}
+                              placeholder="0"
+                              className={`bg-white h-[40px] w-full rounded-[6px] border ${paymentAmountError ? 'border-[#E74C3C] focus:ring-[#E74C3C]' : 'border-[#ddd]'} pl-[24px] pr-[12px] font-['Oxygen:Regular',sans-serif] text-[#555] text-[16px]`}
+                            />
+                          </div>
+                          {paymentAmountError && (
+                            <p className="font-['Oxygen:Regular',sans-serif] text-[#E74C3C] text-[13px] leading-[1.4] mt-[2px]">{paymentAmountError}</p>
+                          )}
                         </div>
                         <div className="flex-[1_0_0] flex flex-col gap-[8px]">
                           <div className="font-['Oxygen:Bold',sans-serif] text-[#555] text-[16px] flex items-center gap-[6px]">
